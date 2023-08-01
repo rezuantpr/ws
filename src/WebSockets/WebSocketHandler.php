@@ -15,8 +15,9 @@ use Exception;
 use Ratchet\ConnectionInterface;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use Ratchet\WebSocket\MessageComponentInterface;
+use Ratchet\WebSocket\WsServerInterface;
 
-class WebSocketHandler implements MessageComponentInterface
+class WebSocketHandler implements MessageComponentInterface, WsServerInterface
 {
     /** @var \BeyondCode\LaravelWebSockets\WebSockets\Channels\ChannelManager */
     protected $channelManager;
@@ -33,6 +34,15 @@ class WebSocketHandler implements MessageComponentInterface
             ->limitConcurrentConnections($connection)
             ->generateSocketId($connection)
             ->establishConnection($connection);
+    }
+
+    public function getSubProtocols() {
+        return [
+            'pusher-channels-protocol-7',
+            'pusher-channels-protocol-6',
+            'pusher-channels-protocol-5',
+            'pusher-channels-protocol-4',
+        ];
     }
 
     public function onMessage(ConnectionInterface $connection, MessageInterface $message)
